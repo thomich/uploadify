@@ -50,3 +50,17 @@ LICENSE
 =======
 
 see LICENSE.txt file
+
+
+CHANGELOG
+=========
+
+v3.2.2 - 2016-09-29 - Adding i18n feature
+
+Example: Add i18n/de.js to your header after jquery.uploadify.js
+
+```html
+<link rel="stylesheet" href="jquery/plugins/uploadify/3.2.1/uploadify.css" type="text/css" media="all" />
+<script type="text/javascript" src="jquery/plugins/uploadify/3.2.1/jquery.uploadify.js"></script>
+<script type="text/javascript" src="jquery/plugins/uploadify/3.2.1/i18n/de.js"></script>
+```
