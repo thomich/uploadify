@@ -77,6 +77,33 @@ Copyright (c) 2012 Reactive Apps, Ronnie Garcia
 Released under the MIT License <http://www.opensource.org/licenses/mit-license.php> 
 */
 
+var uploadifyMessages = new Array();
+uploadifyMessages['replaceQueueItemTextStart'] = 'The file named';
+uploadifyMessages['replaceQueueItemTextEnd'] = 'is already in the queue.\nDo you want to replace the existing item in the queue!!!?';
+uploadifyMessages['overwriteItemTextStart'] = 'A file with the name';
+uploadifyMessages['overwriteItemTextEnd'] = 'already exists on the server.\nWould you like to replace the existing file?';
+uploadifyMessages['queueErrorMessage'] = 'Some files were not added to the queue!';
+uploadifyMessages['queueErrorMessageUploadLimit'] = 'The number of files selected exceeds the remaining upload limit';
+uploadifyMessages['queueErrorMessageQueueSizeLimit'] = 'The number of files selected exceeds the queue size limit';
+uploadifyMessages['queueErrorMessageFileSizeLimitStart'] = 'The file';
+uploadifyMessages['queueErrorMessageFileSizeLimitEnd'] = 'exceeds the size limit';
+uploadifyMessages['queueErrorMessageFileSizeEmptyStart'] = 'The file';
+uploadifyMessages['queueErrorMessageFileSizeEmptyEnd'] = 'is empty!';
+uploadifyMessages['queueErrorMessageFileTypeStart'] = 'The file';
+uploadifyMessages['queueErrorMessageFileTypeEnd'] = 'is not an accepted file type';
+uploadifyMessages['uploadErrorHTTPError'] = 'HTTP Error';
+uploadifyMessages['uploadErrorMissingURL'] = 'Missing Upload URL';
+uploadifyMessages['uploadErrorIOError'] = 'IO Error';
+uploadifyMessages['uploadErrorSecurityError'] = 'Security Error';
+uploadifyMessages['uploadErrorUploadLimit'] = 'The upload limit has been reached';
+uploadifyMessages['uploadErrorUploadLimitExceeded'] = 'Exceeds Upload Limit';
+uploadifyMessages['uploadErrorUploadFailed'] = 'Failed';
+uploadifyMessages['uploadErrorFileValidationFailed'] = 'Validation Error';
+uploadifyMessages['uploadErrorFileCancelled'] = 'Cancelled';
+uploadifyMessages['uploadErrorUploadStopped'] = 'Stopped';
+uploadifyMessages['uploadMessageComplete'] = 'Complete';
+
+
 (function($) {
 
 	// These methods can be called by adding them as the first argument in the uploadify plugin call
@@ -279,7 +306,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 						uploadSize         : 0, // The size in bytes of the upload queue
 						queueBytesUploaded : 0, // The size in bytes that have been uploaded for the current upload queue
 						uploadQueue        : [], // The files currently to be uploaded
-						errorMsg           : 'Some files were not added to the queue:'
+						errorMsg           : uploadifyMessages['queueErrorMessage']
 					};
 
 					// Save references to all the objects
@@ -569,7 +596,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 			var settings = this.settings;
 
 			// Reset some queue info
-			this.queueData.errorMsg       = 'Some files were not added to the queue:';
+			this.queueData.errorMsg       = uploadifyMessages['queueErrorMessage'];
 			this.queueData.filesReplaced  = 0;
 			this.queueData.filesCancelled = 0;
 
@@ -612,7 +639,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 			for (var n in this.queueData.files) {
 				queuedFile = this.queueData.files[n];
 				if (queuedFile.uploaded != true && queuedFile.name == file.name) {
-					var replaceQueueItem = confirm('The file named "' + file.name + '" is already in the queue.\nDo you want to replace the existing item in the queue?');
+					var replaceQueueItem = confirm(uploadifyMessages['replaceQueueItemTextStart'] + ' "' + file.name + '" ' + uploadifyMessages['replaceQueueItemTextEnd']);
 					if (!replaceQueueItem) {
 						this.cancelUpload(file.id);
 						this.queueData.filesCancelled++;
@@ -696,19 +723,19 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 				switch(errorCode) {
 					case SWFUpload.QUEUE_ERROR.QUEUE_LIMIT_EXCEEDED:
 						if (settings.queueSizeLimit > errorMsg) {
-							this.queueData.errorMsg += '\nThe number of files selected exceeds the remaining upload limit (' + errorMsg + ').';
+							this.queueData.errorMsg += '\n' + uploadifyMessages['queueErrorMessageUploadLimit'] + ' (' + errorMsg + ').';
 						} else {
-							this.queueData.errorMsg += '\nThe number of files selected exceeds the queue size limit (' + settings.queueSizeLimit + ').';
+							this.queueData.errorMsg += '\n' + uploadifyMessages['queueErrorMessageQueueSizeLimit'] + ' (' + settings.queueSizeLimit + ').';
 						}
 						break;
 					case SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT:
-						this.queueData.errorMsg += '\nThe file "' + file.name + '" exceeds the size limit (' + settings.fileSizeLimit + ').';
+						this.queueData.errorMsg += '\n' + uploadifyMessages['queueErrorMessageFileSizeLimitStart'] + ' "' + file.name + '" ' + uploadifyMessages['queueErrorMessageFileSizeLimitEnd'] + ' (' + settings.fileSizeLimit + ').';
 						break;
 					case SWFUpload.QUEUE_ERROR.ZERO_BYTE_FILE:
-						this.queueData.errorMsg += '\nThe file "' + file.name + '" is empty.';
+						this.queueData.errorMsg += '\n' + uploadifyMessages['queueErrorMessageFileSizeEmptyStart'] + ' "' + file.name + '" '+ uploadifyMessages['queueErrorMessageFileSizeEmptyEnd'];
 						break;
 					case SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT:
-						this.queueData.errorMsg += '\nThe file "' + file.name + '" is not an accepted file type (' + settings.fileTypeDesc + ').';
+						this.queueData.errorMsg += '\n' + uploadifyMessages['queueErrorMessageFileTypeStart'] + ' "' + file.name + '" ' + uploadifyMessages['queueErrorMessageFileTypeEnd'] + ' (' + settings.fileTypeDesc + ').';
 						break;
 				}
 			}
@@ -803,31 +830,31 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 			var errorString = 'Error';
 			switch(errorCode) {
 				case SWFUpload.UPLOAD_ERROR.HTTP_ERROR:
-					errorString = 'HTTP Error (' + errorMsg + ')';
+					errorString = uploadifyMessages['uploadErrorHTTPError'] + ' (' + errorMsg + ')';
 					break;
 				case SWFUpload.UPLOAD_ERROR.MISSING_UPLOAD_URL:
-					errorString = 'Missing Upload URL';
+					errorString = uploadifyMessages['uploadErrorMissingURL'];
 					break;
 				case SWFUpload.UPLOAD_ERROR.IO_ERROR:
-					errorString = 'IO Error';
+					errorString = uploadifyMessages['uploadErrorIOError'];
 					break;
 				case SWFUpload.UPLOAD_ERROR.SECURITY_ERROR:
-					errorString = 'Security Error';
+					errorString = uploadifyMessages['uploadErrorSecurityError'];
 					break;
 				case SWFUpload.UPLOAD_ERROR.UPLOAD_LIMIT_EXCEEDED:
-					alert('The upload limit has been reached (' + errorMsg + ').');
-					errorString = 'Exceeds Upload Limit';
+					alert(uploadifyMessages['uploadErrorUploadLimit'] + ' (' + errorMsg + ').');
+					errorString = uploadifyMessages['uploadErrorUploadLimitExceeded'];
 					break;
 				case SWFUpload.UPLOAD_ERROR.UPLOAD_FAILED:
-					errorString = 'Failed';
+					errorString = uploadifyMessages['uploadErrorUploadFailed'];
 					break;
 				case SWFUpload.UPLOAD_ERROR.SPECIFIED_FILE_ID_NOT_FOUND:
 					break;
 				case SWFUpload.UPLOAD_ERROR.FILE_VALIDATION_FAILED:
-					errorString = 'Validation Error';
+					errorString = uploadifyMessages['uploadErrorFileValidationFailed'];
 					break;
 				case SWFUpload.UPLOAD_ERROR.FILE_CANCELLED:
-					errorString = 'Cancelled';
+					errorString = uploadifyMessages['uploadErrorFileCancelled'];
 					this.queueData.queueSize   -= file.size;
 					this.queueData.queueLength -= 1;
 					if (file.status == SWFUpload.FILE_STATUS.IN_PROGRESS || $.inArray(file.id, this.queueData.uploadQueue) >= 0) {
@@ -838,7 +865,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 					delete this.queueData.files[file.id];
 					break;
 				case SWFUpload.UPLOAD_ERROR.UPLOAD_STOPPED:
-					errorString = 'Stopped';
+					errorString = uploadifyMessages['uploadErrorUploadStopped'];
 					break;
 			}
 
@@ -931,7 +958,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 					data    : {filename: file.name},
 					success : function(data) {
 						if (data == 1) {
-							var overwrite = confirm('A file with the name "' + file.name + '" already exists on the server.\nWould you like to replace the existing file?');
+							var overwrite = confirm(uploadifyMessages['overwriteItemTextStart'] + ' "' + file.name + '" ' + uploadifyMessages['overwriteItemTextEnd']);
 							if (!overwrite) {
 								this.cancelUpload(file.id);
 								$('#' + file.id).remove();
@@ -962,7 +989,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 
 			// Call the default event handler
 			if ($.inArray('onUploadSuccess', settings.overrideEvents) < 0) {
-				$('#' + file.id).find('.data').html(' - Complete');
+				$('#' + file.id).find('.data').html(' - ' + uploadifyMessages['uploadMessageComplete']);
 			}
 
 			// Call the user-defined event handler
